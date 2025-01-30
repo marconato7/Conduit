@@ -8,6 +8,7 @@ O que desejo incluir no projeto:
 - [✅ FEITO] Clean Architecture - Precisa de melhorias  
 - [✅ FEITO] Domain Events - Precisa de melhorias  
 - [✅ FEITO] CQRS - Precisa de melhorias  
+- [✅ FEITO] Autenticação de Usuários Básica - Precisa de melhorias  
 - [⛔ PENDENTE] Validação  
 - [⛔ PENDENTE] Vertical Slices Architecture  
 - [⛔ PENDENTE] Integration Events  (incluir módulos)
