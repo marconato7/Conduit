@@ -20,9 +20,9 @@ O que desejo incluir no projeto:
 - [⛔ PENDENTE] Problem Details  
 - [⛔ PENDENTE] Reporting (Relatórios)  
 - [⛔ PENDENTE] CI/CD
-- [⛔ PENDENTE] Testes
-
-e mais...  
+- [⛔ PENDENTE] Testes (Unitário, E2E, teste de carga, etc)
+- [⛔ PENDENTE] Biblioteca Postman
+- e mais...  
 
 Contribuições são bem-vindas!  
 
