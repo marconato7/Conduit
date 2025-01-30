@@ -21,9 +21,10 @@ O que desejo incluir no projeto:
 - [⛔ PENDENTE] Minimal APIs  
 - [⛔ PENDENTE] Problem Details  
 - [⛔ PENDENTE] Reporting (Relatórios)  
-- [⛔ PENDENTE] CI/CD
-- [⛔ PENDENTE] Testes (Unitário, E2E, teste de carga, etc)
-- [⛔ PENDENTE] Biblioteca Postman
+- [⛔ PENDENTE] CI/CD  
+- [⛔ PENDENTE] Testes (Unitário, E2E, teste de carga, etc)  
+- [⛔ PENDENTE] Biblioteca Postman  
+- [⛔ PENDENTE] Static Analysis  
 - e mais...  
 
 Contribuições são bem-vindas!  
