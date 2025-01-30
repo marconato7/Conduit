@@ -4,10 +4,10 @@
 ⚠ Ainda não está finalizado! ⚠  
 
 O que desejo incluir no projeto:  
-- [✅ FEITO] Domain-driven Design (DDD)  
-- [✅ FEITO] Clean Architecture  
-- [✅ FEITO] Domain Events  
-- [✅ FEITO] CQRS  
+- [✅ FEITO] Domain-driven Design (DDD) - Precisa de melhorias  
+- [✅ FEITO] Clean Architecture - Precisa de melhorias  
+- [✅ FEITO] Domain Events - Precisa de melhorias  
+- [✅ FEITO] CQRS - Precisa de melhorias  
 - [⛔ PENDENTE] Validação  
 - [⛔ PENDENTE] Vertical Slices Architecture  
 - [⛔ PENDENTE] Integration Events  (incluir módulos)
