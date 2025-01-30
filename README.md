@@ -19,6 +19,9 @@ O que desejo incluir no projeto:
 - [⛔ PENDENTE] Minimal APIs  
 - [⛔ PENDENTE] Problem Details  
 - [⛔ PENDENTE] Reporting (Relatórios)  
+- [⛔ PENDENTE] CI/CD
+- [⛔ PENDENTE] Testes
+
 e mais...  
 
 Contribuições são bem-vindas!  
