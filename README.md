@@ -1,7 +1,7 @@
 
 ### Minha versão do backend do [RealWorld App](https://github.com/gothinkster/realworld)
 
-Ainda não está finalizado.  
+⚠ Ainda não está finalizado! ⚠  
 
 O que desejo incluir no projeto:  
 - [✅ FEITO] Domain-driven Design (DDD)  
