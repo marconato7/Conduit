@@ -1,5 +1,5 @@
 
-[✅] Authentication:  
+[✅] Authentication  
 [✅] Registration  
 [✅] Get Current User  
 [✅] Update User  
