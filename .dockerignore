@@ -1,0 +1,11 @@
+
+.containers
+.files
+docs
+.dockerignore
+.gitignore
+conduit-migrations.bat
+docker-compose.yml
+endpoints.md
+README.md
+
