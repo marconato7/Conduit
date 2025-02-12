@@ -25,7 +25,7 @@ O que desejo incluir no projeto:
 - [⛔ PENDENTE] Testes (Unitário, E2E, teste de carga, etc)  
 - [⛔ PENDENTE] Biblioteca Postman  
 - [⛔ PENDENTE] Static Analysis  
-- e mais...  
+- E mais...  
 
 Contribuições são bem-vindas!  
 

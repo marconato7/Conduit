@@ -28,6 +28,20 @@ namespace Conduit.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tags",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    created_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_tags", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "users",
                 columns: table => new
                 {
@@ -51,7 +65,6 @@ namespace Conduit.Infrastructure.Migrations
                     title = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
                     body = table.Column<string>(type: "text", nullable: false),
-                    tag_list = table.Column<string[]>(type: "text[]", nullable: true),
                     created_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     slug = table.Column<string>(type: "text", nullable: false),
@@ -93,6 +106,30 @@ namespace Conduit.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "article_tag",
+                columns: table => new
+                {
+                    articles_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    tag_list_id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_article_tag", x => new { x.articles_id, x.tag_list_id });
+                    table.ForeignKey(
+                        name: "fk_article_tag_articles_articles_id",
+                        column: x => x.articles_id,
+                        principalTable: "articles",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_article_tag_tags_tag_list_id",
+                        column: x => x.tag_list_id,
+                        principalTable: "tags",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "favorited_articles",
                 columns: table => new
                 {
@@ -117,6 +154,11 @@ namespace Conduit.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "ix_article_tag_tag_list_id",
+                table: "article_tag",
+                column: "tag_list_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_articles_author_id",
                 table: "articles",
                 column: "author_id");
@@ -125,6 +167,12 @@ namespace Conduit.Infrastructure.Migrations
                 name: "ix_favorited_articles_articles_id",
                 table: "favorited_articles",
                 column: "articles_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_tags_name",
+                table: "tags",
+                column: "name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_user_user_following_id",
@@ -148,6 +196,9 @@ namespace Conduit.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "article_tag");
+
+            migrationBuilder.DropTable(
                 name: "favorited_articles");
 
             migrationBuilder.DropTable(
@@ -155,6 +206,9 @@ namespace Conduit.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "user_user");
+
+            migrationBuilder.DropTable(
+                name: "tags");
 
             migrationBuilder.DropTable(
                 name: "articles");

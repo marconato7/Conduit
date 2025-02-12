@@ -24,6 +24,38 @@ internal sealed class RegistrationCommandHandler
         CancellationToken cancellationToken
     )
     {
+        var existingUser = await _userRepository.GetByEmailAsync(command.Email, cancellationToken);
+        if (existingUser is not null)
+        {
+            // refactor: inject
+            if(
+                new PasswordHasher<User>().VerifyHashedPassword
+                (
+                    existingUser,
+                    existingUser.PasswordHash,
+                    command.Password
+                ) == PasswordVerificationResult.Failed
+            )
+            {
+                return Result.Fail("authentication failed");
+            }
+
+            var tokenForExistingUser = _tokenService.Create(existingUser);
+            if (tokenForExistingUser is null)
+            {
+                return Result.Fail("authentication failed");
+            }
+
+            return new RegistrationCommandDto
+            (
+                Email:    existingUser.Email,
+                Token:    tokenForExistingUser,
+                Username: existingUser.Username,
+                Bio:      existingUser.Bio,
+                Image:    existingUser.Image
+            );
+        }
+
         var user = User.Create
         (
             username: command.Username,

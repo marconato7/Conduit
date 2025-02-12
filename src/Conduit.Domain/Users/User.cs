@@ -41,6 +41,11 @@ public sealed class User : Entity
         FavoriteArticles.Add(favoriteArticle);
     }
 
+    public void UnfavoriteArticle(Article favoriteArticle)
+    {
+        FavoriteArticles.Remove(favoriteArticle);
+    }
+
     public void SetPasswordHash(string passwordHash)
     {
         PasswordHash = passwordHash;

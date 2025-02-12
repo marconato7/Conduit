@@ -1,6 +1,8 @@
 using Conduit.Application.Abstractions.Cqrs;
+using Conduit.Application.Articles.Shared;
 using Conduit.Domain.Abstractions;
 using Conduit.Domain.Articles;
+using Conduit.Domain.Tags;
 using Conduit.Domain.Users;
 using FluentResults;
 
@@ -51,7 +53,7 @@ internal sealed class FavoriteArticleCommandHandler
 
         var articlesAuthor = await _userRepository.GetByEmailAsync
         (
-            email: article.Author.Email,
+            email:             article.Author.Email,
             cancellationToken: cancellationToken
         );
 
@@ -66,7 +68,7 @@ internal sealed class FavoriteArticleCommandHandler
             Title:          article.Title,
             Description:    article.Description,
             Body:           article.Body,
-            TagList:        article.TagList,
+            TagList:        TagListToStringList(article.TagList),
             CreatedAt:      article.CreatedAtUtc,
             UpdatedAt:      article.UpdatedAtUtc,
             Favorited:      true,
@@ -81,5 +83,15 @@ internal sealed class FavoriteArticleCommandHandler
         );
 
         return Result.Ok(favoriteArticleCommandDto);
+
+        static List<string> TagListToStringList(List<Tag> tags)
+        {
+            if (tags is null)
+            {
+                return [];
+            }
+
+            return [.. tags.Select(tag => tag.Name)];
+        }
     }
 }

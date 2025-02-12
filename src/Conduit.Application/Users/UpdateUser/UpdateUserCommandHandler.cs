@@ -28,16 +28,16 @@ internal sealed class UpdateUserCommandHandler
 
         if (userToUpdate is null)
         {
-            throw new Exception(nameof(userToUpdate));
+            return Result.Fail("something went wrong");
         }
 
         userToUpdate.Update
         (
-            email:        command.Email,
-            username:     command.Username,
-            passwordHash: command.Password,
-            bio:          command.Bio,
-            image:        command.Image
+            email:        command.Email    ?? userToUpdate.Email,
+            username:     command.Username ?? userToUpdate.Username,
+            passwordHash: command.Password ?? userToUpdate.PasswordHash, // to do, todo, refactor: add logic to change password
+            bio:          command.Bio      ?? userToUpdate.Bio,
+            image:        command.Image    ?? userToUpdate.Image
         );
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);

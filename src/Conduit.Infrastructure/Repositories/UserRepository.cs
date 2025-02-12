@@ -20,6 +20,7 @@ public sealed class UserRepository(ApplicationDbContext applicationDbContext) : 
         var user = await _applicationDbContext
             .Set<User>()
             .Include(user => user.Following)
+            .Include(user => user.FavoriteArticles)
             .SingleOrDefaultAsync(user => user.Email == email, cancellationToken: cancellationToken);
 
         return user;

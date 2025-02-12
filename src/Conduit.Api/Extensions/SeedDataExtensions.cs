@@ -15,6 +15,8 @@ internal static class SeedDataExtensions
 
         using IDbConnection connection = sqlConnectionFactory.CreateConnection();
 
+        // Users
+
         var faker = new Faker();
 
         List<Guid>   ids   = [];
@@ -52,6 +54,33 @@ internal static class SeedDataExtensions
         """;
 
         connection.Execute(sqlUsers, users);
+
+        // Tags
+
+        List<object> tags = [];
+
+        for (int i = 0; i < 100; i++)
+        {
+            tags.Add
+            (
+                new
+                {
+                    Id           = Guid.CreateVersion7(),
+                    Name         = faker.Hacker.Noun(),
+                    CreatedAtUtc = DateTime.UtcNow
+                }
+            );
+        }
+
+        const string sqlTags =
+        """
+            INSERT INTO tags (id, name, created_at_utc)
+            VALUES (@Id, @Name, @CreatedAtUtc);
+        """;
+
+        connection.Execute(sqlTags, tags);
+
+        // Articles
 
         List<object> articles = [];
 

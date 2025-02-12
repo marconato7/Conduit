@@ -4,9 +4,9 @@ namespace Conduit.Application.Articles.CreateArticle;
 
 public sealed record CreateArticleCommand
 (
-    string    CurrentUsersEmail,
-    string    Title,
-    string    Description,
-    string    Body,
-    string[]? TagList
+    string        CurrentUsersEmail,
+    string        Title,
+    string        Description,
+    string        Body,
+    List<string>? TagList
 ) : ICommand<CreateArticleCommandDto>;

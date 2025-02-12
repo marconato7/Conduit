@@ -1,36 +1,53 @@
 services:
 
-    # pgAdmin
-    conduit.pgadmin:
-        container_name: conduit.pgadmin
-        depends_on:
-            - conduit.postgresql
-        environment:
-          PGADMIN_DEFAULT_EMAIL: pgadmin@default.email
-          PGADMIN_DEFAULT_PASSWORD: PGADMIN_DEFAULT_PASSWORD
-        expose:
-            - 80
-        hostname: conduit.pgadmin
-        image: dpage/pgadmin4
-        ports:
-            - 8080:80
-        restart: always
-        volumes:
-          - ./.containers/pgadmin:/var/lib/pgadmin
+  # conduit.api:
+  #   build:
+  #     context: .
+  #     target: final
+  #   container_name: conduit.api
+  #   hostname: conduit.api
+  #   ports:
+  #     - 7777:8080
+  #   depends_on:
+  #     conduit.postgresql:
+  #       condition: service_healthy
 
-    # PostgreSQL
-    conduit.postgresql:
-        container_name: conduit.postgresql
-        environment:
-            - POSTGRES_DB=conduit
-            - POSTGRES_USER=conduit
-            - POSTGRES_PASSWORD=conduit
-        expose:
-            - 5432
-        hostname: conduit.postgresql
-        image: postgres:latest
-        ports:
-            - 5432:5432
-        restart: unless-stopped
-        volumes:
-            - ./.containers/database:/var/lib/postgresql/data
+  # pgAdmin
+  conduit.pgadmin:
+      container_name: conduit.pgadmin
+      depends_on:
+          - conduit.postgresql
+      environment:
+        PGADMIN_DEFAULT_EMAIL: pgadmin@default.email
+        PGADMIN_DEFAULT_PASSWORD: PGADMIN_DEFAULT_PASSWORD
+      expose:
+          - 80
+      hostname: conduit.pgadmin
+      image: dpage/pgadmin4
+      ports:
+          - 8080:80
+      restart: always
+      volumes:
+        - ./.containers/pgadmin:/var/lib/pgadmin
+
+  # PostgreSQL
+  conduit.postgresql:
+      container_name: conduit.postgresql
+      environment:
+          - POSTGRES_DB=conduit
+          - POSTGRES_USER=conduit
+          - POSTGRES_PASSWORD=conduit
+      expose:
+          - 5432
+      hostname: conduit.postgresql
+      image: postgres:latest
+      ports:
+          - 5432:5432
+      restart: unless-stopped
+      volumes:
+          - ./.containers/database:/var/lib/postgresql/data
+      healthcheck:
+        test: [ "CMD", "pg_isready" ]
+        interval: 10s
+        timeout: 5s
+        retries: 5

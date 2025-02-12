@@ -11,6 +11,8 @@ internal sealed class ArticleConfiguration : IEntityTypeConfiguration<Article>
         builder.ToTable("articles");
         builder.HasKey(article => article.Id);
         builder.Property(article => article.Id).ValueGeneratedNever();
+        builder.HasIndex(article => article.Slug).IsUnique();
         // builder.Property<uint>("Version").IsRowVersion();
+        // builder.HasMany(article => article.TagList).WithMany(tags => tags.Articles);
     }
 }

@@ -182,8 +182,10 @@ public class UsersController(ISender sender): ControllerBase
                 )
             );
         }
-
-        return Results.InternalServerError();
+        else
+        {
+            return Results.InternalServerError(updateUserCommandResult.Errors.First().Message);
+        }
     }
 
     [HttpGet]

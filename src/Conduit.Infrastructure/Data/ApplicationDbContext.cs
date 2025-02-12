@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Conduit.Domain.Abstractions;
 using Conduit.Domain.Articles;
+using Conduit.Domain.Tags;
 using Conduit.Domain.Users;
 using Conduit.Infrastructure.Outbox;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +13,7 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     public DbSet<Article>       Articles       { get; set; }
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
     public DbSet<User>          Users          { get; set; }
-    // public DbSet<Comment>       Comments       { get; set; }
-    // public DbSet<Tag>           Tags           { get; set; }
+    public DbSet<Tag>           Tags           { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

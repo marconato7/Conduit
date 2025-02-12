@@ -22,6 +22,25 @@ namespace Conduit.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("ArticleTag", b =>
+                {
+                    b.Property<Guid>("ArticlesId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("articles_id");
+
+                    b.Property<Guid>("TagListId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tag_list_id");
+
+                    b.HasKey("ArticlesId", "TagListId")
+                        .HasName("pk_article_tag");
+
+                    b.HasIndex("TagListId")
+                        .HasDatabaseName("ix_article_tag_tag_list_id");
+
+                    b.ToTable("article_tag", (string)null);
+                });
+
             modelBuilder.Entity("Conduit.Domain.Articles.Article", b =>
                 {
                     b.Property<Guid>("Id")
@@ -51,10 +70,6 @@ namespace Conduit.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("slug");
 
-                    b.PrimitiveCollection<string[]>("TagList")
-                        .HasColumnType("text[]")
-                        .HasColumnName("tag_list");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text")
@@ -71,6 +86,35 @@ namespace Conduit.Infrastructure.Migrations
                         .HasDatabaseName("ix_articles_author_id");
 
                     b.ToTable("articles", (string)null);
+                });
+
+            modelBuilder.Entity("Conduit.Domain.Tags.Tag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_tags");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_tags_name");
+
+                    b.ToTable("tags", (string)null);
                 });
 
             modelBuilder.Entity("Conduit.Domain.Users.User", b =>
@@ -187,6 +231,23 @@ namespace Conduit.Infrastructure.Migrations
                         .HasDatabaseName("ix_user_user_following_id");
 
                     b.ToTable("user_user", (string)null);
+                });
+
+            modelBuilder.Entity("ArticleTag", b =>
+                {
+                    b.HasOne("Conduit.Domain.Articles.Article", null)
+                        .WithMany()
+                        .HasForeignKey("ArticlesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_article_tag_articles_articles_id");
+
+                    b.HasOne("Conduit.Domain.Tags.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_article_tag_tags_tag_list_id");
                 });
 
             modelBuilder.Entity("Conduit.Domain.Articles.Article", b =>

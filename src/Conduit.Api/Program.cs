@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using Conduit.Api.Extensions;
 using Conduit.Application;
@@ -51,12 +52,15 @@ builder.Services.AddControllers();
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 
+// builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
+builder.Services.AddEndpoints(typeof(Program).Assembly);
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.ApplyMigrations();
-    app.SeedData();
+    // app.ApplyMigrations();
+    // app.SeedData();
 }
 
 app.MapControllers();
@@ -64,4 +68,27 @@ app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
 
+var port = Environment.GetEnvironmentVariable("PORT");
+
+app.MapEndpoints();
+
 app.Run();
+
+// app.Run($"http://localhost:{port}");
+
+// app.Urls.Add("http://localhost:6666");
+// app.Urls.Add("https://localhost:6667");
+
+// app.Run("http://localhost:7070");
+// app.Run("https://localhost:7071");
+
+// var builder = WebApplication.CreateBuilder(args);
+
+// var app = builder.Build();
+
+// app.MapGet("/", (ILogger<Program> logger) =>
+// {
+//     logger.LogInformation("Hello, World!");
+
+//     return "Hello, World!";
+// });
