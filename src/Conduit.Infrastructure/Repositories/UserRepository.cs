@@ -15,12 +15,62 @@ public sealed class UserRepository(ApplicationDbContext applicationDbContext) : 
             .Add(user);
     }
 
+    public async Task<bool> CheckIfExistsByEmail
+    (
+        string email,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var exists = await _applicationDbContext
+            .Set<User>()
+            .AnyAsync
+            (
+                user => user.Email == email,
+                cancellationToken: cancellationToken
+            );
+
+        return exists;
+    }
+
     public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
         var user = await _applicationDbContext
             .Set<User>()
             .Include(user => user.Following)
             .Include(user => user.FavoriteArticles)
+            .SingleOrDefaultAsync(user => user.Email == email, cancellationToken: cancellationToken);
+
+        return user;
+    }
+
+    public async Task<User?> GetByEmailWithAuthoredArticlesAsync
+    (
+        string email,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var user = await _applicationDbContext
+            .Set<User>()
+            .Include(user => user.AuthoredArticles)
+            .SingleOrDefaultAsync
+            (
+                user => user.Email == email,
+                cancellationToken: cancellationToken
+            );
+
+        return user;
+    }
+
+    public async Task<User?> GetByEmailWithFollowingAsync
+    (
+        string            email,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var user = await _applicationDbContext
+            .Set<User>()
+            .Include(user => user.Following)
+            .AsNoTracking()
             .SingleOrDefaultAsync(user => user.Email == email, cancellationToken: cancellationToken);
 
         return user;

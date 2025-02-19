@@ -8,8 +8,6 @@ public class UnfavoriteArticle : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        Console.WriteLine("GetTags.MapEndpoint");
-
         app
             .MapDelete
             (
@@ -22,10 +20,6 @@ public class UnfavoriteArticle : IEndpoint
                     CancellationToken cancellationToken = default
                 ) =>
                 {
-                    string stepOne = context.Request.Headers.Authorization!;
-                    string[] stepTwo = stepOne.Split("Token ");
-                    string token = stepTwo[1];
-
                     var currentUsersEmail = context.User.Claims.FirstOrDefault
                         (claim => claim.Type == ClaimTypes.Email)?.Value;
 

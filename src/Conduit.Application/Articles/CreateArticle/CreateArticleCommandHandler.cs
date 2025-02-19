@@ -3,7 +3,6 @@ using Conduit.Application.Abstractions.Cqrs;
 using Conduit.Application.Articles.Shared;
 using Conduit.Domain.Abstractions;
 using Conduit.Domain.Articles;
-using Conduit.Domain.Tags;
 using Conduit.Domain.Users;
 using FluentResults;
 

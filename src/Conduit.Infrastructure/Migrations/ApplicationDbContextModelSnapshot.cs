@@ -75,7 +75,7 @@ namespace Conduit.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("title");
 
-                    b.Property<DateTime?>("UpdatedAtUtc")
+                    b.Property<DateTime>("UpdatedAtUtc")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at_utc");
 
@@ -85,10 +85,54 @@ namespace Conduit.Infrastructure.Migrations
                     b.HasIndex("AuthorId")
                         .HasDatabaseName("ix_articles_author_id");
 
+                    b.HasIndex("Slug")
+                        .IsUnique()
+                        .HasDatabaseName("ix_articles_slug");
+
                     b.ToTable("articles", (string)null);
                 });
 
-            modelBuilder.Entity("Conduit.Domain.Tags.Tag", b =>
+            modelBuilder.Entity("Conduit.Domain.Articles.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ArticleId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("article_id");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("author_id");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("body");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_comments");
+
+                    b.HasIndex("ArticleId")
+                        .HasDatabaseName("ix_comments_article_id");
+
+                    b.HasIndex("AuthorId")
+                        .HasDatabaseName("ix_comments_author_id");
+
+                    b.ToTable("comments", (string)null);
+                });
+
+            modelBuilder.Entity("Conduit.Domain.Articles.Tag", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -242,7 +286,7 @@ namespace Conduit.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_article_tag_articles_articles_id");
 
-                    b.HasOne("Conduit.Domain.Tags.Tag", null)
+                    b.HasOne("Conduit.Domain.Articles.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagListId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -258,6 +302,27 @@ namespace Conduit.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_articles_users_author_id");
+
+                    b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("Conduit.Domain.Articles.Comment", b =>
+                {
+                    b.HasOne("Conduit.Domain.Articles.Article", "Article")
+                        .WithMany("Comments")
+                        .HasForeignKey("ArticleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_comments_articles_article_id");
+
+                    b.HasOne("Conduit.Domain.Users.User", "Author")
+                        .WithMany("Comments")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_comments_users_author_id");
+
+                    b.Navigation("Article");
 
                     b.Navigation("Author");
                 });
@@ -296,9 +361,16 @@ namespace Conduit.Infrastructure.Migrations
                         .HasConstraintName("fk_user_user_users_following_id");
                 });
 
+            modelBuilder.Entity("Conduit.Domain.Articles.Article", b =>
+                {
+                    b.Navigation("Comments");
+                });
+
             modelBuilder.Entity("Conduit.Domain.Users.User", b =>
                 {
                     b.Navigation("AuthoredArticles");
+
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

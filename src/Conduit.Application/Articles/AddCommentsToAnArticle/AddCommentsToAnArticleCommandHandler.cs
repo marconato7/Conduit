@@ -1,10 +1,8 @@
 using Conduit.Application.Abstractions.Clock;
 using Conduit.Application.Abstractions.Cqrs;
-using Conduit.Application.Articles.CreateArticle;
 using Conduit.Application.Articles.Shared;
 using Conduit.Domain.Abstractions;
 using Conduit.Domain.Articles;
-using Conduit.Domain.Tags;
 using Conduit.Domain.Users;
 using FluentResults;
 
@@ -40,57 +38,40 @@ internal sealed class AddCommentsToAnArticleCommandHandler
             return Result.Fail("something went wrong");
         }
 
-        List<Tag>? existingTags               = [];
-        List<string>? tagsThatNeedToBeCreated = [];
-
-        if (command.TagList is not null)
-        {
-            existingTags = await _articleRepository.GetTagsByName
-            (
-                tagNames:          command.TagList,
-                cancellationToken: cancellationToken
-            );
-
-            foreach (var tagName in command.TagList)
-            {
-                if (existingTags is not null)
-                {
-                    var check = existingTags.Any(existingTag => existingTag.Name == tagName);
-                    if (!check)
-                    {
-                        tagsThatNeedToBeCreated.Add(tagName);
-                    }
-                }
-            }
-        }
-
-        var article = Article.Create
+        var article = await _articleRepository.GetBySlugAsync
         (
-            title:                   command.Title,
-            description:             command.Description,
-            body:                    command.Body,
-            author:                  currentUser,
-            createdAtUtc:            _dateTimeProvider.UtcNow,
-            tagsThatNeedToBeCreated: tagsThatNeedToBeCreated,
-            existingTags:            existingTags
+            command.Slug,
+            cancellationToken
         );
 
-        _articleRepository.Add(article);
+        if (article is null)
+        {
+            return Result.Fail("something went wrong");
+        }
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return new AddCommentsToAnArticleCommandDto
+        var comment = Comment.Create
         (
-            Slug:           article.Slug,
-            Title:          article.Title,
-            Description:    article.Description,
-            Body:           article.Body,
-            TagList:        TagListToStringArray(article.TagList),
-            CreatedAt:      article.CreatedAtUtc,
-            UpdatedAt:      article.CreatedAtUtc,
-            Favorited:      false,
-            FavoritesCount: 0,
-            Author:         new AuthorModel
+            command.Body,
+            currentUser,
+            _dateTimeProvider.UtcNow
+        );
+
+        article.AddComment(comment);
+
+        await _articleRepository.StoreArticleWithComment
+        (
+            article:           article,
+            comment:           comment,
+            cancellationToken: cancellationToken
+        );
+
+        var addCommentsToAnArticleCommandDto = new AddCommentsToAnArticleCommandDto
+        (
+            Id:        comment.Id,
+            CreatedAt: article.CreatedAtUtc,
+            UpdatedAt: article.CreatedAtUtc,
+            Body:      article.Body,
+            Author:    new AuthorModel
             (
                 Username:  currentUser.Username,
                 Bio:       currentUser.Bio,
@@ -99,9 +80,6 @@ internal sealed class AddCommentsToAnArticleCommandHandler
             )
         );
 
-        static List<string>? TagListToStringArray(List<Tag>? tags)
-        {
-            return tags?.Select(tag => tag.Name).ToList();
-        }
+        return addCommentsToAnArticleCommandDto;
     }
 }

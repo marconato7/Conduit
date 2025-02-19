@@ -4,9 +4,7 @@ namespace Conduit.Application.Articles.AddCommentsToAnArticle;
 
 public sealed record AddCommentsToAnArticleCommand
 (
-    string        CurrentUsersEmail,
-    string        Title,
-    string        Description,
-    string        Body,
-    List<string>? TagList
+    string CurrentUsersEmail,
+    string Slug,
+    string Body
 ) : ICommand<AddCommentsToAnArticleCommandDto>;

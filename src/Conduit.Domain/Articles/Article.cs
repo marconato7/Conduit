@@ -1,6 +1,5 @@
 ﻿using Conduit.Domain.Abstractions;
 using Conduit.Domain.Articles.Events;
-using Conduit.Domain.Tags;
 using Conduit.Domain.Users;
 using Slugify;
 
@@ -8,18 +7,21 @@ namespace Conduit.Domain.Articles;
 
 public sealed class Article : Entity
 {
-    public string     Title              { get; private set; } // refactor: solve primitive obsession
-    public string     Description        { get; private set; } // refactor: solve primitive obsession
-    public string     Body               { get; private set; } // refactor: solve primitive obsession
-    public List<Tag>  TagList            { get; private set; } // refactor: solve primitive obsession
-    public DateTime   CreatedAtUtc       { get; private set; } // refactor: solve primitive obsession
-    public DateTime?  UpdatedAtUtc       { get; private set; } // refactor: solve primitive obsession
-    public string     Slug               { get; private set; } // refactor: solve primitive obsession
-    public Guid       AuthorId           { get; private set; }
-    public User       Author             { get; private set; } = null!;
-    public List<User> UsersThatFavorited { get; }              = [];
+    public string        Title              { get; private set; } // refactor: solve primitive obsession
+    public string        Description        { get; private set; } // refactor: solve primitive obsession
+    public string        Body               { get; private set; } // refactor: solve primitive obsession
+    public List<Tag>     TagList            { get; private set; } // refactor: solve primitive obsession
+    public DateTime      CreatedAtUtc       { get; private set; } // refactor: solve primitive obsession
+    public DateTime      UpdatedAtUtc       { get; private set; } // refactor: solve primitive obsession
+    public string        Slug               { get; private set; } // refactor: solve primitive obsession
+    public Guid          AuthorId           { get; private set; }
+    public User          Author             { get; private set; } = null!;
+    public List<User>    UsersThatFavorited { get; }              = [];
+    public List<Comment> Comments           { get; private set; } = []; // refactor: solve primitive obsession
 
+    #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private Article() {} // for EF Core
+    #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     private Article
     (
@@ -37,7 +39,7 @@ public sealed class Article : Entity
         Description  = description;
         Body         = body;
         TagList      = tagList;
-        Slug         = title;
+        Slug         = slug;
         Id           = Guid.CreateVersion7();
         Author       = author;
         AuthorId     = author.Id;
@@ -82,11 +84,35 @@ public sealed class Article : Entity
             author:       author,
             createdAtUtc: createdAtUtc,
             slug:         helper.GenerateSlug(title)
-
         );
 
         article.RaiseDomainEvent(new ArticleCreatedDomainEvent(article.Id));
 
         return article;
+    }
+
+    public void AddComment(Comment comment)
+    {
+        if (Comments.Contains(comment))
+        {
+            return;
+        }
+
+        Comments.Add(comment);
+
+        return;
+    }
+
+    public void RemoveComment(Guid commentId)
+    {
+        var comment = Comments.Find
+        (
+            comment => comment.Id == commentId
+        );
+
+        if (comment is not null)
+        {
+            Comments.Remove(comment);
+        }
     }
 }

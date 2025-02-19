@@ -8,24 +8,19 @@ public class AddCommentsToAnArticle : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        Console.WriteLine("GetTags.MapEndpoint");
-
         app
             .MapPost
             (
                 "/api/articles/{slug}/comments",
                 async
                 (
-                    string            slug,
-                    ISender           sender,
-                    HttpContext       context,
-                    CancellationToken cancellationToken = default
+                    string                        slug,
+                    AddCommentsToAnArticleRequest request,
+                    ISender                       sender,
+                    HttpContext                   context,
+                    CancellationToken             cancellationToken = default
                 ) =>
                 {
-                    string stepOne = context.Request.Headers.Authorization!;
-                    string[] stepTwo = stepOne.Split("Token ");
-                    string token = stepTwo[1];
-
                     var currentUsersEmail = context.User.Claims.FirstOrDefault
                         (claim => claim.Type == ClaimTypes.Email)?.Value;
 
@@ -37,7 +32,8 @@ public class AddCommentsToAnArticle : IEndpoint
                     var addCommentsToAnArticleCommand = new AddCommentsToAnArticleCommand
                     (
                         CurrentUsersEmail: currentUsersEmail,
-                        Slug:              slug
+                        Slug:              slug,
+                        Body:              request.Comment.Body
                     );
 
                     var addCommentsToAnArticleCommandResult = await sender.Send
@@ -50,18 +46,13 @@ public class AddCommentsToAnArticle : IEndpoint
                     {
                         var addCommentsToAnArticleResponse = new AddCommentsToAnArticleResponse
                         (
-                            Article: new AddCommentsToAnArticleResponseProps
+                            Comment: new AddCommentsToAnArticleResponseProps
                             (
-                                Slug:           addCommentsToAnArticleCommandResult.Value.Slug,
-                                Title:          addCommentsToAnArticleCommandResult.Value.Title,
-                                Description:    addCommentsToAnArticleCommandResult.Value.Description,
-                                Body:           addCommentsToAnArticleCommandResult.Value.Body,
-                                TagList:        addCommentsToAnArticleCommandResult.Value.TagList,
-                                CreatedAt:      addCommentsToAnArticleCommandResult.Value.CreatedAt,
-                                UpdatedAt:      addCommentsToAnArticleCommandResult.Value.UpdatedAt,
-                                Favorited:      addCommentsToAnArticleCommandResult.Value.Favorited,
-                                FavoritesCount: addCommentsToAnArticleCommandResult.Value.FavoritesCount,
-                                Author:         new AuthorModelForResponse
+                                Id:        addCommentsToAnArticleCommandResult.Value.Id,
+                                CreatedAt: addCommentsToAnArticleCommandResult.Value.CreatedAt,
+                                UpdatedAt: addCommentsToAnArticleCommandResult.Value.UpdatedAt,
+                                Body:      addCommentsToAnArticleCommandResult.Value.Body,
+                                Author:    new AuthorModelForResponse
                                 (
                                     Username:  addCommentsToAnArticleCommandResult.Value.Author.Username,
                                     Bio:       addCommentsToAnArticleCommandResult.Value.Author.Bio,
@@ -74,7 +65,7 @@ public class AddCommentsToAnArticle : IEndpoint
                         return Results.Ok(addCommentsToAnArticleResponse);
                     }
 
-                    return Results.Unauthorized();
+                    return Results.InternalServerError();
                 }
             )
             .RequireAuthorization();

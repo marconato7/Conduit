@@ -59,7 +59,7 @@ internal sealed class ListArticlesQueryHandler
                     Description:    article.Description,
                     TagList:        article.TagList is null ? [] : [.. article.TagList.Select(tag => tag.Name)],
                     CreatedAt:      article.CreatedAtUtc,
-                    UpdatedAt:      article.UpdatedAtUtc ?? article.CreatedAtUtc,
+                    UpdatedAt:      article.UpdatedAtUtc,
                     Favorited:      currentUser is not null && currentUser.FavoriteArticles.Any(a => a.Id == article.Id),
                     FavoritesCount: article.UsersThatFavorited.Count,
                     Author:         new AuthorModel

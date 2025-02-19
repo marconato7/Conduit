@@ -1,4 +1,4 @@
-using Conduit.Domain.Tags;
+using Conduit.Domain.Articles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,8 +1,8 @@
 using Conduit.Domain.Articles;
-using Conduit.Domain.Tags;
 using Conduit.Domain.Users;
 using Conduit.Infrastructure.Data;
 using FluentResults;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Conduit.Infrastructure.Repositories;
@@ -19,6 +19,25 @@ public sealed class ArticleRepository(ApplicationDbContext applicationDbContext)
         _applicationDbContext.Add(article);
     }
 
+    public async Task<Article?> GetArticleQueryAsync
+    (
+        string            slug,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var article = await _applicationDbContext
+            .Set<Article>()
+            .Include(article => article.Author)
+            .AsNoTracking()
+            .SingleOrDefaultAsync
+            (
+                article => article.Slug == slug,
+                cancellationToken: cancellationToken
+            );
+
+        return article;
+    }
+
     public async Task<Article?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var article = await _applicationDbContext
@@ -28,12 +47,37 @@ public sealed class ArticleRepository(ApplicationDbContext applicationDbContext)
         return article;
     }
 
-    public async Task<Article?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default)
+    public async Task<Article?> GetBySlugAsync
+    (
+        string slug,
+        CancellationToken cancellationToken = default
+    )
     {
         var article = await _applicationDbContext
             .Set<Article>()
             .Include(article => article.Author)
-            .SingleOrDefaultAsync(article => article.Slug == slug, cancellationToken: cancellationToken);
+            .Include(article => article.Comments)
+            .SingleOrDefaultAsync
+            (
+                article => article.Slug == slug,
+                cancellationToken: cancellationToken
+            );
+
+        return article;
+    }
+
+    public async Task<Article?> GetBySlugWithCommentsAsync(string slug, CancellationToken cancellationToken = default)
+    {
+        var article = await _applicationDbContext
+            .Set<Article>()
+            .Include(article => article.Author)
+            .Include(article => article.Comments)
+            .AsNoTracking()
+            .SingleOrDefaultAsync
+            (
+                article => article.Slug == slug,
+                cancellationToken: cancellationToken
+            );
 
         return article;
     }
@@ -124,6 +168,20 @@ public sealed class ArticleRepository(ApplicationDbContext applicationDbContext)
         return articles;
     }
 
+    public async Task<List<Article>?> FeedArticles
+    (
+        User              user,
+        CancellationToken cancellationToken = default)
+    {
+        var articles = await _applicationDbContext
+            .Set<Article>()
+            .Where(a => user.Following.Contains(a.Author))
+            .OrderByDescending(a => a.CreatedAtUtc)
+            .ToListAsync(cancellationToken);
+
+        return articles;
+    }
+
     public async Task<Result> RemoveBySlugAsync(string slug, CancellationToken cancellationToken = default)
     {
         var article = await _applicationDbContext
@@ -140,6 +198,28 @@ public sealed class ArticleRepository(ApplicationDbContext applicationDbContext)
                 .Set<Article>()
                 .Remove(article);
         }
+        else
+        {
+            return Result.Ok();
+        }
+
+        await _applicationDbContext.SaveChangesAsync(cancellationToken);
+
+        return Result.Ok();
+    }
+
+    public async Task<Result> StoreArticleWithComment
+    (
+        Article           article,
+        Comment           comment,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var articleEntry = _applicationDbContext.Entry(article);
+        var commentEntry = _applicationDbContext.Entry(comment);
+
+        articleEntry.State = EntityState.Modified;
+        commentEntry.State = EntityState.Added;
 
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
 

@@ -9,7 +9,7 @@ public sealed class User : Entity
 {
     public string  Username     { get; private set; }                 // refactor: solve primitive obsession
     public string  Email        { get; private set; }                 // refactor: solve primitive obsession
-    public string  PasswordHash { get; private set; }                 // refactor: solve primitive obsession
+    public string  PasswordHash { get; private set; } = string.Empty; // refactor: solve primitive obsession
     public string? Bio          { get; private set; } = string.Empty; // refactor: solve primitive obsession
     public string? Image        { get; private set; } = string.Empty; // refactor: solve primitive obsession
 
@@ -19,7 +19,11 @@ public sealed class User : Entity
     public List<User> Followers { get; } = [];
     public List<User> Following { get; } = [];
 
+    public List<Comment> Comments { get; } = [];
+
+    #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private User() {} // for EF Core
+    #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     public User(string username, string email)
     {
@@ -44,6 +48,11 @@ public sealed class User : Entity
     public void UnfavoriteArticle(Article favoriteArticle)
     {
         FavoriteArticles.Remove(favoriteArticle);
+    }
+
+    public void RemoveArticle(Article authoredArticle)
+    {
+        AuthoredArticles.Remove(authoredArticle);
     }
 
     public void SetPasswordHash(string passwordHash)

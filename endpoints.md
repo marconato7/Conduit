@@ -1,4 +1,6 @@
 
+### Endpoints
+
 [✅] Authentication  
 [✅] Registration  
 [✅] Get Current User  
@@ -8,14 +10,14 @@
 [✅] Unfollow user  
 [] List Articles  
 [] Feed Articles  
-[] Get Article  
-[] Create Article  
+[✅] Get Article  
+[✅] Create Article  
 [] Update Article  
-[] Delete Article  
-[] Add Comments to an Article  
-[] Get Comments from an Article  
-[] Delete Comment  
+[✅] Delete Article  
+[✅] Add Comments to an Article  
+[✅] Get Comments from an Article  
+[✅] Delete Comment  
 [✅] Favorite Article  
 [✅] Unfavorite Article  
-[] Get Tags  
+[✅] Get Tags  
 
