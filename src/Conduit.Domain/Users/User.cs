@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Conduit.Domain.Abstractions;
+﻿using Conduit.Domain.Abstractions;
 using Conduit.Domain.Articles;
 using Conduit.Domain.Users.Events;
 

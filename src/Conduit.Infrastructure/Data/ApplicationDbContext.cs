@@ -22,38 +22,40 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
         base.OnModelCreating(modelBuilder);
     }
 
-    // public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    // {
-    //     try
-    //     {
-    //         var outboxMessages = ChangeTracker
-    //             .Entries<Entity>()
-    //             .Select(entry => entry.Entity) 
-    //             .SelectMany(entity =>
-    //             {
-    //                 var domainEvents = entity.GetDomainEvents();
-    //                 entity.ClearDomainEvents();
-    //                 return domainEvents;
-    //             })
-    //             .Select(domainEvent =>
-    //             {
-    //                 return new OutboxMessage
-    //                 (
-    //                     type: domainEvent.GetType().Name,
-    //                     content: JsonSerializer.Serialize(domainEvent, domainEvent.GetType())
-    //                 );
-    //             })
-    //             .ToList();
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var outboxMessages = ChangeTracker
+                .Entries<Entity>()
+                .Select(entry => entry.Entity) 
+                .SelectMany(entity =>
+                {
+                    var domainEvents = entity.GetDomainEvents();
 
-    //         Set<OutboxMessage>().AddRange(outboxMessages);
+                    entity.ClearDomainEvents();
 
-    //         var result = await base.SaveChangesAsync(cancellationToken);
+                    return domainEvents;
+                })
+                .Select(domainEvent =>
+                {
+                    return new OutboxMessage
+                    (
+                        type:    domainEvent.GetType().Name,
+                        content: JsonSerializer.Serialize(domainEvent, domainEvent.GetType())
+                    );
+                })
+                .ToList();
 
-    //         return result;
-    //     }
-    //     catch (Exception exception)
-    //     {
-    //         throw new Exception(nameof(exception), exception);
-    //     }
-    // }
+            Set<OutboxMessage>().AddRange(outboxMessages);
+
+            var result = await base.SaveChangesAsync(cancellationToken);
+
+            return result;
+        }
+        catch (Exception exception)
+        {
+            throw new Exception(nameof(exception), exception);
+        }
+    }
 }

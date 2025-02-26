@@ -57,7 +57,7 @@ internal sealed class ListArticlesQueryHandler
                     Slug:           article.Slug,
                     Title:          article.Title,
                     Description:    article.Description,
-                    TagList:        article.Tags is null ? [] : [.. article.Tags.Select(tag => tag.Name)],
+                    TagList:        article.Tags is null ? [] : query.Tag is null ? [.. article.Tags.Select(tag => tag.Name)] : [.. article.Tags.OrderBy(tag => tag.Name != query.Tag).Select(tag => tag.Name)],
                     CreatedAt:      article.CreatedAtUtc,
                     UpdatedAt:      article.UpdatedAtUtc,
                     Favorited:      currentUser is not null && currentUser.FavoriteArticles.Any(a => a.Id == article.Id),
