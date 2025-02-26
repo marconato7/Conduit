@@ -1,8 +1,8 @@
 using Conduit.Application.Articles.Shared;
 
-namespace Conduit.Application.Articles.CreateArticle;
+namespace Conduit.Application.Articles.UpdateArticle;
 
-public sealed record CreateArticleCommandDto
+public sealed record UpdateArticleCommandDto
 (
     string       Slug,
     string       Title,

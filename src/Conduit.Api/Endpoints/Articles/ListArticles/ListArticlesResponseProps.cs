@@ -5,7 +5,6 @@ public sealed record ListArticlesResponseProps
     string                 Slug,
     string                 Title,
     string                 Description,
-    string                 Body,
     List<string>?          TagList,
     DateTime               CreatedAt,
     DateTime?              UpdatedAt,

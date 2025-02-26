@@ -57,7 +57,7 @@ internal sealed class ListArticlesQueryHandler
                     Slug:           article.Slug,
                     Title:          article.Title,
                     Description:    article.Description,
-                    TagList:        article.TagList is null ? [] : [.. article.TagList.Select(tag => tag.Name)],
+                    TagList:        article.Tags is null ? [] : [.. article.Tags.Select(tag => tag.Name)],
                     CreatedAt:      article.CreatedAtUtc,
                     UpdatedAt:      article.UpdatedAtUtc,
                     Favorited:      currentUser is not null && currentUser.FavoriteArticles.Any(a => a.Id == article.Id),
@@ -73,7 +73,9 @@ internal sealed class ListArticlesQueryHandler
             );
         }
 
-        var listArticlesQueryDto = new ListArticlesQueryDto(listArticlesQueryDtoProps, articles.Count());
+        var listArticlesQueryDto = new ListArticlesQueryDto
+        (
+            listArticlesQueryDtoProps, articles.Count());
 
         return listArticlesQueryDto;
     }

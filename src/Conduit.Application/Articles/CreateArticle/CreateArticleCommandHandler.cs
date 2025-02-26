@@ -83,7 +83,7 @@ internal sealed class CreateArticleCommandHandler
             Title:          article.Title,
             Description:    article.Description,
             Body:           article.Body,
-            TagList:        TagListToStringArray(article.TagList),
+            TagList:        [.. article.Tags.Select(t => t.Name)],
             CreatedAt:      article.CreatedAtUtc,
             UpdatedAt:      article.CreatedAtUtc,
             Favorited:      false,
@@ -96,10 +96,5 @@ internal sealed class CreateArticleCommandHandler
                 Following: false
             )
         );
-
-        static List<string>? TagListToStringArray(List<Tag>? tags)
-        {
-            return tags?.Select(tag => tag.Name).ToList();
-        }
     }
 }

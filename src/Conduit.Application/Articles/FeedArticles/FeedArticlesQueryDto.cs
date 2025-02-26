@@ -2,7 +2,11 @@ using Conduit.Application.Articles.Shared;
 
 namespace Conduit.Application.Articles.FeedArticles;
 
-public sealed record FeedArticlesQueryDto(List<FeedArticlesQueryDtoProps> Articles, int ArticlesCount);
+public sealed record FeedArticlesQueryDto
+(
+    List<FeedArticlesQueryDtoProps> Articles,
+    int ArticlesCount
+);
 
 public sealed record FeedArticlesQueryDtoProps
 (

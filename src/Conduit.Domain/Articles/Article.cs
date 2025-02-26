@@ -10,7 +10,7 @@ public sealed class Article : Entity
     public string        Title              { get; private set; } // refactor: solve primitive obsession
     public string        Description        { get; private set; } // refactor: solve primitive obsession
     public string        Body               { get; private set; } // refactor: solve primitive obsession
-    public List<Tag>     TagList            { get; private set; } // refactor: solve primitive obsession
+    public List<Tag>     Tags               { get; private set; } // refactor: solve primitive obsession
     public DateTime      CreatedAtUtc       { get; private set; } // refactor: solve primitive obsession
     public DateTime      UpdatedAtUtc       { get; private set; } // refactor: solve primitive obsession
     public string        Slug               { get; private set; } // refactor: solve primitive obsession
@@ -38,23 +38,24 @@ public sealed class Article : Entity
         Title        = title;
         Description  = description;
         Body         = body;
-        TagList      = tagList;
+        Tags         = tagList;
         Slug         = slug;
         Id           = Guid.CreateVersion7();
         Author       = author;
         AuthorId     = author.Id;
         CreatedAtUtc = createdAtUtc;
+        UpdatedAtUtc = createdAtUtc;
     }
 
     public static Article Create
     (
-        string        title,
-        string        description,
-        string        body,
-        User          author,
-        DateTime      createdAtUtc,
-        List<string>? tagsThatNeedToBeCreated,
-        List<Tag>?    existingTags
+        string       title,
+        string       description,
+        string       body,
+        User         author,
+        DateTime     createdAtUtc,
+        List<string> tagsThatNeedToBeCreated,
+        List<Tag>    existingTags
     )
     {
         SlugHelper helper = new();
@@ -103,6 +104,12 @@ public sealed class Article : Entity
         return;
     }
 
+    public void AddComments(List<Comment> comments)
+    {
+        Comments.AddRange(comments);
+        return;
+    }
+
     public void RemoveComment(Guid commentId)
     {
         var comment = Comments.Find
@@ -114,5 +121,20 @@ public sealed class Article : Entity
         {
             Comments.Remove(comment);
         }
+    }
+
+    public void Update
+    (
+        string? title,
+        string? description,
+        string? body
+    )
+    {
+        SlugHelper helper = new();
+        Title             = title       ?? Title;
+        Description       = description ?? Description;
+        Body              = body        ?? Body;
+        Slug              = helper.GenerateSlug(title ?? Title);
+        UpdatedAtUtc      = DateTime.UtcNow;
     }
 }

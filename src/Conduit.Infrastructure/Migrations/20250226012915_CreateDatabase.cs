@@ -32,9 +32,7 @@ namespace Conduit.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    created_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -110,11 +108,11 @@ namespace Conduit.Infrastructure.Migrations
                 columns: table => new
                 {
                     articles_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    tag_list_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    tags_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_article_tag", x => new { x.articles_id, x.tag_list_id });
+                    table.PrimaryKey("pk_article_tag", x => new { x.articles_id, x.tags_id });
                     table.ForeignKey(
                         name: "fk_article_tag_articles_articles_id",
                         column: x => x.articles_id,
@@ -122,8 +120,8 @@ namespace Conduit.Infrastructure.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_article_tag_tags_tag_list_id",
-                        column: x => x.tag_list_id,
+                        name: "fk_article_tag_tags_tags_id",
+                        column: x => x.tags_id,
                         principalTable: "tags",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -182,9 +180,9 @@ namespace Conduit.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_article_tag_tag_list_id",
+                name: "ix_article_tag_tags_id",
                 table: "article_tag",
-                column: "tag_list_id");
+                column: "tags_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_articles_author_id",

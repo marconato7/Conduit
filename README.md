@@ -10,6 +10,7 @@ O que desejo incluir no projeto:
 - [✅ FEITO] CQRS - Precisa de melhorias  
 - [✅ FEITO] Autenticação de Usuários Básica - Precisa de melhorias  
 - [⛔ PENDENTE] Validação  
+- [⛔ PENDENTE] Exception Handling  
 - [⛔ PENDENTE] Vertical Slices Architecture  
 - [⛔ PENDENTE] Integration Events  (incluir módulos)
 - [⛔ PENDENTE] Logging  

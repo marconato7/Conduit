@@ -1,8 +1,6 @@
 using System.Security.Claims;
-using Conduit.Api.Endpoints.Articles.FavoriteArticle;
-using Conduit.Application.Articles;
-using Conduit.Application.Articles.FavoriteArticle;
 using Conduit.Application.Articles.GetArticle;
+using Conduit.Application.Articles.Shared;
 using MediatR;
 
 namespace Conduit.Api.Endpoints.Articles.GetArticle;
@@ -67,21 +65,14 @@ public class GetArticle : IEndpoint
                     }
                     else
                     {
-                        if (getArticleQueryResult.IsFailed && getArticleQueryResult.Errors.First().Message == ArticleErrors.NotFound.Message)
+                        if
+                        (
+                            getArticleQueryResult.IsFailed &&
+                            getArticleQueryResult.Errors.First().Message
+                                == ArticlesErrors.NotFound.Message
+                        )
                         {
-                            return Results.NotFound
-                            (
-                                new
-                                {
-                                    Errors = new
-                                    {
-                                        Body = new string[]
-                                        {
-                                            ArticleErrors.NotFound.Message
-                                        }
-                                    }
-                                }
-                            );
+                            return Results.NotFound();
                         }
                     }
 

@@ -1,4 +1,5 @@
 using Conduit.Application.Abstractions.Cqrs;
+using Conduit.Application.Articles.Shared;
 using Conduit.Domain.Abstractions;
 using Conduit.Domain.Articles;
 using Conduit.Domain.Users;
@@ -27,7 +28,7 @@ internal sealed class DeleteArticleCommandHandler
         if (currentUser is null) return Result.Fail("something went wrong");
 
         var article = await _articleRepository.GetBySlugAsync(command.Slug, cancellationToken);
-        if (article is null) return Result.Fail(ArticleErrors.NotFound.Message);
+        if (article is null) return Result.Fail(ArticlesErrors.NotFound.Message);
 
         if (article.AuthorId != currentUser.Id)
         {

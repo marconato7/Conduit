@@ -67,7 +67,7 @@ internal sealed class FavoriteArticleCommandHandler
             Title:          article.Title,
             Description:    article.Description,
             Body:           article.Body,
-            TagList:        TagListToStringList(article.TagList),
+            TagList:        TagListToStringList(article.Tags),
             CreatedAt:      article.CreatedAtUtc,
             UpdatedAt:      article.UpdatedAtUtc,
             Favorited:      true,

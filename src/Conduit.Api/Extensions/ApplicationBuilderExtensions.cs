@@ -11,6 +11,8 @@ internal static class ApplicationBuilderExtensions
 
         using var applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        applicationDbContext.Database.Migrate();
+        applicationDbContext.Database.EnsureDeleted();
+        applicationDbContext.Database.EnsureCreated();
+        // applicationDbContext.Database.Migrate();
     }
 }

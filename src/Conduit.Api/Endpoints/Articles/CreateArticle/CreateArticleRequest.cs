@@ -1,3 +1,6 @@
-namespace Conduit.Api.Controllers.Articles.CreateArticle;
+namespace Conduit.Api.Endpoints.Articles.CreateArticle;
 
-public sealed record CreateArticleRequest(CreateArticleRequestProps Article);
+public sealed record CreateArticleRequest
+(
+    CreateArticleRequestProps Article
+);

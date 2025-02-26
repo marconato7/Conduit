@@ -1,4 +1,3 @@
-using Conduit.Domain.Abstractions;
 using Conduit.Domain.Users;
 
 namespace Conduit.Domain.Articles;

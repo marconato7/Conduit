@@ -40,7 +40,7 @@ internal sealed class GetArticleQueryHandler
 
         if (article is null)
         {
-            return Result.Fail(ArticleErrors.NotFound.Message);
+            return Result.Fail("article not found");
         }
 
         var getArticleQueryDto = new GetArticleQueryDto
@@ -49,7 +49,7 @@ internal sealed class GetArticleQueryHandler
             Title:          article.Title,
             Description:    article.Description,
             Body:           article.Body,
-            TagList:        article.TagList is null ? [] : [.. article.TagList.Select(tag => tag.Name)],
+            TagList:        article.Tags.Count != 0 ? [.. article.Tags.Select(tag => tag.Name)] : [],
             CreatedAt:      article.CreatedAtUtc,
             UpdatedAt:      article.UpdatedAtUtc,
             Favorited:      currentUser is not null && currentUser.FavoriteArticles.Any(a => a.Id == article.Id),

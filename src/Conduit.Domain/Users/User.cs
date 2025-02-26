@@ -1,4 +1,4 @@
-﻿using System.Net;
+﻿using System.ComponentModel.DataAnnotations;
 using Conduit.Domain.Abstractions;
 using Conduit.Domain.Articles;
 using Conduit.Domain.Users.Events;
@@ -25,24 +25,43 @@ public sealed class User : Entity
     private User() {} // for EF Core
     #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
-    public User(string username, string email)
+    public User
+    (
+        string username,
+        string email
+    )
     {
         Username     = username;
         Email        = email;
         Id           = Guid.CreateVersion7();
     }
 
-    public static User Create(string username, string email)
+    public static User Create
+    (
+        string username,
+        string email
+    )
     {
         // refactor: add validation, guards, etc.
-        var user = new User(username, email);
+        var user = new User
+        (
+            username,
+            email
+        );
+
         user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id));
+
         return user;
     }
 
     public void FavoriteArticle(Article favoriteArticle)
     {
         FavoriteArticles.Add(favoriteArticle);
+    }
+
+    public void FavoritizeArticles(List<Article> favoriteArticles)
+    {
+        FavoriteArticles.AddRange(favoriteArticles);
     }
 
     public void UnfavoriteArticle(Article favoriteArticle)

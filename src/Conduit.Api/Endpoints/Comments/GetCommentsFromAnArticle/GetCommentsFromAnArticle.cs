@@ -24,11 +24,6 @@ public class GetCommentsFromAnArticle : IEndpoint
                     var currentUsersEmail = context.User.Claims.FirstOrDefault
                         (claim => claim.Type == ClaimTypes.Email)?.Value;
 
-                    if (currentUsersEmail is null)
-                    {
-                        return Results.Unauthorized();
-                    }
-
                     var getCommentsFromAnArticleCommand = new GetCommentsFromAnArticleCommand
                     (
                         CurrentUsersEmail: currentUsersEmail,

@@ -5,36 +5,25 @@ using Conduit.Domain.Articles;
 using Conduit.Domain.Users;
 using FluentResults;
 
-namespace Conduit.Application.Articles.UnfavoriteArticle;
+namespace Conduit.Application.Articles.UpdateArticle;
 
-internal sealed class UnfavoriteArticleCommandHandler
+internal sealed class UpdateArticleCommandHandler
 (
     IArticleRepository articleRepository,
     IUnitOfWork        unitOfWork,
     IUserRepository    userRepository
-) : ICommandHandler<UnfavoriteArticleCommand, UnfavoriteArticleCommandDto>
+) : ICommandHandler<UpdateArticleCommand, UpdateArticleCommandDto>
 {
     private readonly IArticleRepository _articleRepository = articleRepository;
     private readonly IUnitOfWork        _unitOfWork        = unitOfWork;
     private readonly IUserRepository    _userRepository    = userRepository;
 
-    public async Task<Result<UnfavoriteArticleCommandDto>> Handle
+    public async Task<Result<UpdateArticleCommandDto>> Handle
     (
-        UnfavoriteArticleCommand command,
+        UpdateArticleCommand command,
         CancellationToken        cancellationToken
     )
     {
-        var currentUser = await _userRepository.GetByEmailAsync
-        (
-            email:             command.CurrentUsersEmail,
-            cancellationToken: cancellationToken
-        );
-
-        if (currentUser is null)
-        {
-            return Result.Fail("something went wrong");
-        }
-
         var article = await _articleRepository.GetBySlugAsync
         (
             slug:              command.Slug,
@@ -46,22 +35,27 @@ internal sealed class UnfavoriteArticleCommandHandler
             return Result.Fail("something went wrong");
         }
 
-        currentUser.UnfavoriteArticle(article);
-
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        var articlesAuthor = await _userRepository.GetByEmailAsync
+        var currentUser = await _userRepository.GetByEmailAsync
         (
-            email:             article.Author.Email,
+            email:             command.CurrentUsersEmail,
             cancellationToken: cancellationToken
         );
 
-        if (articlesAuthor is null)
+        if (currentUser is null || !Equals(currentUser.Id, article.AuthorId))
         {
             return Result.Fail("something went wrong");
         }
 
-        var unfavoriteArticleCommandDto = new UnfavoriteArticleCommandDto
+        article.Update
+        (
+            title:       command.Title,
+            description: command.Description,
+            body:        command.Body
+        );
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        var updateArticleCommandDto = new UpdateArticleCommandDto
         (
             Slug:           article.Slug,
             Title:          article.Title,
@@ -74,14 +68,14 @@ internal sealed class UnfavoriteArticleCommandHandler
             FavoritesCount: article.UsersThatFavorited.Count,
             Author:         new AuthorModel
             (
-                Username:  articlesAuthor.Username,
-                Bio:       articlesAuthor.Bio,
-                Image:     articlesAuthor.Image,
-                Following: currentUser.IsFollowing(articlesAuthor)
+                Username:  currentUser.Username,
+                Bio:       currentUser.Bio,
+                Image:     currentUser.Image,
+                Following: false
             )
         );
 
-        return Result.Ok(unfavoriteArticleCommandDto);
+        return Result.Ok(updateArticleCommandDto);
 
         static List<string> TagListToStringList(List<Tag> tags)
         {

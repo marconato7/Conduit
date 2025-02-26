@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Conduit.Application.Articles;
 using Conduit.Application.Articles.DeleteArticle;
 using Conduit.Application.Articles.GetArticle;
+using Conduit.Application.Articles.Shared;
 using MediatR;
 
 namespace Conduit.Api.Endpoints.Articles.DeleteArticle;
@@ -48,21 +49,13 @@ public class DeleteArticle : IEndpoint
                     }
                     else
                     {
-                        if (deleteArticleCommandResult.IsFailed && deleteArticleCommandResult.Errors.First().Message == ArticleErrors.NotFound.Message)
+                        if
+                        (
+                            deleteArticleCommandResult.IsFailed &&
+                            deleteArticleCommandResult.Errors.First().Message
+                                == ArticlesErrors.NotFound.Message)
                         {
-                            return Results.NotFound
-                            (
-                                new
-                                {
-                                    Errors = new
-                                    {
-                                        Body = new string[]
-                                        {
-                                            ArticleErrors.NotFound.Message
-                                        }
-                                    }
-                                }
-                            );
+                            return Results.NotFound();
                         }
                     }
 

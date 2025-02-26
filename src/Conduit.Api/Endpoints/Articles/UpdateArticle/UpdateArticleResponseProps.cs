@@ -1,12 +1,12 @@
-namespace Conduit.Api.Endpoints.Articles.CreateArticle;
+namespace Conduit.Api.Endpoints.Articles.UpdateArticle;
 
-public sealed record CreateArticleResponseProps
+internal sealed record UpdateArticleResponseProps
 (
     string                 Slug,
     string                 Title,
     string                 Description,
     string                 Body,
-    List<string>?          TagList,
+    List<string>           TagList,
     DateTime               CreatedAt,
     DateTime?              UpdatedAt,
     bool                   Favorited,

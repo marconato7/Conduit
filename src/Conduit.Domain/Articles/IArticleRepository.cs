@@ -8,6 +8,8 @@ public interface IArticleRepository
     Task<List<Article>?> FeedArticles
     (
         User              user,
+        int?              limit,
+        int?              offset,
         CancellationToken cancellationToken = default
     );
 
@@ -42,7 +44,7 @@ public interface IArticleRepository
 
     Task<Article?> GetArticleQueryAsync
     (
-        string slug,
+        string            slug,
         CancellationToken cancellationToken = default
     );
 }

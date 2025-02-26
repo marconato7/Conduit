@@ -18,19 +18,16 @@ internal sealed class GetCommentsFromAnArticleCommandHandler
     public async Task<Result<GetCommentsFromAnArticleCommandDto>> Handle
     (
         GetCommentsFromAnArticleCommand command,
-        CancellationToken             cancellationToken
+        CancellationToken               cancellationToken
     )
     {
-        var currentUser = await _userRepository.GetByEmailAsync
+        User? currentUser = null;
+
+        currentUser = await _userRepository.GetByEmailAsync
         (
             email:             command.CurrentUsersEmail,
             cancellationToken: cancellationToken
         );
-
-        if (currentUser is null)
-        {
-            return Result.Fail("something went wrong");
-        }
 
         var articleWithComments = await _articleRepository.GetBySlugWithCommentsAsync
         (
@@ -60,7 +57,7 @@ internal sealed class GetCommentsFromAnArticleCommandHandler
                         Username:  articleWithComments.Author.Username,
                         Bio:       articleWithComments.Author.Bio,
                         Image:     articleWithComments.Author.Image,
-                        Following: currentUser.IsFollowing(articleWithComments.Author)
+                        Following: currentUser is null ? false : currentUser.IsFollowing(articleWithComments.Author)
                     )
                 )
             );

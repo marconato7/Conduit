@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Conduit.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250214004517_CreateDatabase")]
+    [Migration("20250226012915_CreateDatabase")]
     partial class CreateDatabase
     {
         /// <inheritdoc />
@@ -31,15 +31,15 @@ namespace Conduit.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("articles_id");
 
-                    b.Property<Guid>("TagListId")
+                    b.Property<Guid>("TagsId")
                         .HasColumnType("uuid")
-                        .HasColumnName("tag_list_id");
+                        .HasColumnName("tags_id");
 
-                    b.HasKey("ArticlesId", "TagListId")
+                    b.HasKey("ArticlesId", "TagsId")
                         .HasName("pk_article_tag");
 
-                    b.HasIndex("TagListId")
-                        .HasDatabaseName("ix_article_tag_tag_list_id");
+                    b.HasIndex("TagsId")
+                        .HasDatabaseName("ix_article_tag_tags_id");
 
                     b.ToTable("article_tag", (string)null);
                 });
@@ -141,18 +141,10 @@ namespace Conduit.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at_utc");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<DateTime?>("UpdatedAtUtc")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at_utc");
 
                     b.HasKey("Id")
                         .HasName("pk_tags");
@@ -291,10 +283,10 @@ namespace Conduit.Infrastructure.Migrations
 
                     b.HasOne("Conduit.Domain.Articles.Tag", null)
                         .WithMany()
-                        .HasForeignKey("TagListId")
+                        .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_article_tag_tags_tag_list_id");
+                        .HasConstraintName("fk_article_tag_tags_tags_id");
                 });
 
             modelBuilder.Entity("Conduit.Domain.Articles.Article", b =>

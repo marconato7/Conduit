@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Conduit.Api.Controllers.Articles.CreateArticle;
 using Conduit.Application.Articles.CreateArticle;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +15,7 @@ public class CreateArticle : IEndpoint
                 "/api/articles",
                 async
                 (
-                    [FromBody]  CreateArticleRequest request,
+                    [FromBody] CreateArticleRequest  request,
                     ISender                          sender,
                     HttpContext                      context,
                     CancellationToken                cancellationToken = default
