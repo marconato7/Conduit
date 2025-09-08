@@ -1,94 +1,87 @@
-using System.Reflection;
 using System.Text;
+using Conduit.Api.Data;
 using Conduit.Api.Extensions;
-using Conduit.Application;
-using Conduit.Infrastructure;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using Conduit.Api.Features.RegisterUser;
+using Conduit.Api.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    // options.UseSqlite("conduit.api.users.sqlite");
+    options.UseInMemoryDatabase("conduit.api.users");
+});
+
 builder.Services
-    .AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme    = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultScheme             = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata      = false;
-        options.SaveToken                 = true;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            IssuerSigningKey              = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Secret").Value!)),
-            ValidateAudience              = false,
-            ValidateIssuer                = false,
-            ValidateIssuerSigningKey      = false,
-            ValidAudience                 = builder.Configuration.GetSection("Jwt:Audience").Value!,
-            ValidIssuer                   = builder.Configuration.GetSection("Jwt:Issuer").Value!,
-        };
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = ctx =>
-            {
-                if (ctx.Request.Headers.ContainsKey("Authorization"))
-                {
-                    var bearerToken = ctx.Request.Headers.Authorization.ElementAt(0);
-                    var token = bearerToken!.StartsWith("Token ") ? bearerToken[6..] : bearerToken;
-                    ctx.Token = token;
-                }
+    .AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
-                return Task.CompletedTask;
-            }
-        };
-    })
-    .AddBearerToken();
+// builder.Services
+//     .AddAuthentication(options =>
+//     {
+//         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//         options.DefaultChallengeScheme    = JwtBearerDefaults.AuthenticationScheme;
+//         options.DefaultScheme             = JwtBearerDefaults.AuthenticationScheme;
+//     })
+//     .AddJwtBearer(options =>
+//     {
+//         options.RequireHttpsMetadata      = false;
+//         options.SaveToken                 = true;
+//         options.TokenValidationParameters = new TokenValidationParameters
+//         {
+//             IssuerSigningKey              = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Secret").Value!)),
+//             ValidateAudience              = false,
+//             ValidateIssuer                = false,
+//             ValidateIssuerSigningKey      = false,
+//             ValidAudience                 = builder.Configuration.GetSection("Jwt:Audience").Value!,
+//             ValidIssuer                   = builder.Configuration.GetSection("Jwt:Issuer").Value!,
+//         };
+//         options.Events = new JwtBearerEvents
+//         {
+//             OnMessageReceived = ctx =>
+//             {
+//                 if (ctx.Request.Headers.ContainsKey("Authorization"))
+//                 {
+//                     var bearerToken = ctx.Request.Headers.Authorization.ElementAt(0);
+//                     var token = bearerToken!.StartsWith("Token ") ? bearerToken[6..] : bearerToken;
+//                     ctx.Token = token;
+//                 }
 
-builder.Services.AddAuthorization();
+//                 return Task.CompletedTask;
+//             }
+//         };
+//     })
+//     .AddBearerToken();
+
+// builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 
-builder.Services.AddApplication(builder.Configuration);
-builder.Services.AddInfrastructure(builder.Configuration);
+// builder.Services.AddApplication(builder.Configuration);
+// builder.Services.AddInfrastructure(builder.Configuration);
 
 // builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
-builder.Services.AddEndpoints(typeof(Program).Assembly);
+// builder.Services.AddEndpoints(typeof(Program).Assembly);
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.ApplyMigrations();
-    app.SeedData();
+    await app.ApplyMigrations();
+    // app.SeedData();
 }
 
 app.MapControllers();
 
-app.UseAuthentication();
-app.UseAuthorization();
+// app.UseAuthentication();
+// app.UseAuthorization();
 
-var port = Environment.GetEnvironmentVariable("PORT");
+// app.MapEndpoints();
 
-app.MapEndpoints();
+RegisterUser.MapEndpoint(app);
 
-app.Run();
+app.UseHttpsRedirection();
 
-// app.Run($"http://localhost:{port}");
-
-// app.Urls.Add("http://localhost:6666");
-// app.Urls.Add("https://localhost:6667");
-
-// app.Run("http://localhost:7070");
-// app.Run("https://localhost:7071");
-
-// var builder = WebApplication.CreateBuilder(args);
-
-// var app = builder.Build();
-
-// app.MapGet("/", (ILogger<Program> logger) =>
-// {
-//     logger.LogInformation("Hello, World!");
-
-//     return "Hello, World!";
-// });
+await app.RunAsync();

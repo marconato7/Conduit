@@ -1,10 +1,10 @@
 using System.Data;
 using Bogus;
+using Conduit.Api.Data;
 using Conduit.Application.Abstractions.Authentication;
 using Conduit.Application.Abstractions.Data;
 using Conduit.Domain.Articles;
 using Conduit.Domain.Users;
-using Conduit.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
