@@ -1,5 +1,6 @@
 using Conduit.Api.Data;
 using Conduit.Api.Models;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 
 namespace Conduit.Api.Features.RegisterUser;
@@ -23,8 +24,11 @@ public static class RegisterUser
                 ApplicationDbContext applicationDbContext
             ) =>
             {
+                throw new ValidationException("Failed to register user");
+                throw new ApplicationException("Failed to register user");
+
                 // using var transaction = await applicationDbContext.Database
-                    // .BeginTransactionAsync();
+                // .BeginTransactionAsync();
 
                 var user = new ApplicationUser
                 {

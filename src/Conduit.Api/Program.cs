@@ -1,5 +1,6 @@
 using System.Text;
 using Conduit.Api.Data;
+using Conduit.Api.Exceptions;
 using Conduit.Api.Extensions;
 using Conduit.Api.Features.RegisterUser;
 using Conduit.Api.Models;
@@ -7,6 +8,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddProblemDetails(configure =>
+{
+    configure.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Extensions.TryAdd(
+            "requestId", context.HttpContext.TraceIdentifier
+        );
+    };
+});
+
+builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -75,12 +89,16 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 
+app.UseExceptionHandler();
+
 // app.UseAuthentication();
 // app.UseAuthorization();
 
 // app.MapEndpoints();
 
 RegisterUser.MapEndpoint(app);
+
+// app.UseMiddleware<GlobalExceptionHandler>();
 
 app.UseHttpsRedirection();
 
