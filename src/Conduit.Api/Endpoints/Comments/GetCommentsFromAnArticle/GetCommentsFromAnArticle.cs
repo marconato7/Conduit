@@ -22,7 +22,7 @@ public class GetCommentsFromAnArticle : IEndpoint
                 ) =>
                 {
                     var currentUsersEmail = context.User.Claims.FirstOrDefault
-                        (claim => claim.Type == ClaimTypes.Email)?.Value;
+                        (claim => claim.Type == ClaimTypes.Email)?.Value!;
 
                     var getCommentsFromAnArticleCommand = new GetCommentsFromAnArticleCommand
                     (

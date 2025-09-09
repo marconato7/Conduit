@@ -1,4 +1,3 @@
-
 ### Minha versão do backend do [RealWorld App](https://github.com/gothinkster/realworld)
 
 ⚠ Ainda não está finalizado! ⚠  
@@ -14,6 +13,7 @@ O que desejo incluir no projeto:
 - [⛔ PENDENTE] Vertical Slices Architecture  
 - [⛔ PENDENTE] Integration Events  (incluir módulos)
 - [⛔ PENDENTE] Logging  
+    - [⛔ PENDENTE] Serilog  
 - [⛔ PENDENTE] Cache  
 - [⛔ PENDENTE] Health Checks  
 - [⛔ PENDENTE] API Versioning (Versionamento de API)  
@@ -29,4 +29,3 @@ O que desejo incluir no projeto:
 - E mais...  
 
 Contribuições são bem-vindas!  
-

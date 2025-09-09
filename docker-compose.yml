@@ -45,7 +45,7 @@ services:
           - 5432:5432
       restart: unless-stopped
       volumes:
-          - ./.containers/database:/var/lib/postgresql/data
+          - ./.containers/databases/postgresql/data:/var/lib/postgresql/data
       healthcheck:
         test: [ "CMD", "pg_isready" ]
         interval: 10s

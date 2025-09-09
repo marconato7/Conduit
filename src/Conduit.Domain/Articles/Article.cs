@@ -55,7 +55,7 @@ public sealed class Article : Entity
         User         author,
         DateTime     createdAtUtc,
         List<string> tagsThatNeedToBeCreated,
-        List<Tag>    existingTags
+        List<Tag>?   existingTags
     )
     {
         SlugHelper helper = new();

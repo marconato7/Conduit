@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Conduit.Api.Data;
 using Conduit.Api.Models;
 using Microsoft.AspNetCore.Identity;
@@ -11,11 +10,11 @@ internal static class ApplicationBuilderExtensions
     {
         using var scope = app.ApplicationServices.CreateScope();
 
-        // using var applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        using var applicationDbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        // applicationDbContext.Database.EnsureDeleted();
+        applicationDbContext.Database.EnsureDeleted();
 
-        // applicationDbContext.Database.EnsureCreated();
+        applicationDbContext.Database.EnsureCreated();
 
         // applicationDbContext.Database.Migrate();
 

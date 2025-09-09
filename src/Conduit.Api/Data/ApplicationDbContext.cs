@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Conduit.Api.Data;
 
-public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
+internal sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
+    public DbSet<Tag> Tags => Set<Tag>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -16,6 +18,6 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
             appUser.Property(p => p.Initials).HasMaxLength(5);
         });
 
-        modelBuilder.HasDefaultSchema("identity");
+        modelBuilder.HasDefaultSchema("conduit");
     }
 }

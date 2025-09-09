@@ -1,13 +1,25 @@
-using System.Text;
 using Conduit.Api.Data;
 using Conduit.Api.Exceptions;
 using Conduit.Api.Extensions;
+using Conduit.Api.Features.GetTags;
 using Conduit.Api.Features.RegisterUser;
 using Conduit.Api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseDefaultServiceProvider(config =>
+{
+    config.ValidateOnBuild = true;
+});
+
+builder.WebHost.UseKestrel(options => options.AddServerHeader = false);
+
+// builder.Services.AddAuthorizationBuilder()
+//     .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+//     .RequireAuthenticatedUser()
+//     .Build());
 
 builder.Services.AddProblemDetails(configure =>
 {
@@ -20,12 +32,16 @@ builder.Services.AddProblemDetails(configure =>
 });
 
 builder.Services.AddExceptionHandler<ValidationExceptionHandler>();
+
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     // options.UseSqlite("conduit.api.users.sqlite");
-    options.UseInMemoryDatabase("conduit.api.users");
+    // options.UseInMemoryDatabase("conduit.api.users");
+    options
+        .UseNpgsql(builder.Configuration.GetConnectionString("Database"))
+        .UseSnakeCaseNamingConvention();
 });
 
 builder.Services
@@ -96,6 +112,7 @@ app.UseExceptionHandler();
 
 // app.MapEndpoints();
 
+GetTags.MapEndpoint(app);
 RegisterUser.MapEndpoint(app);
 
 // app.UseMiddleware<GlobalExceptionHandler>();
