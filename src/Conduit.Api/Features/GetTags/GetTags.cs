@@ -14,12 +14,12 @@ public static partial class GetTags
                 "api/tags",
                 async (ApplicationDbContext applicationDbContext) =>
                 {
-                    var tags = await applicationDbContext.Set<Tag>()
-                        .ToListAsync();
+                    var tagsArray = await applicationDbContext
+                        .Set<Tag>()
+                        .Select(tag => tag.Name)
+                        .ToArrayAsync();
 
-                    var getTagsResponse = new GetTagsResponse(
-                        [.. tags.Select(t => t.Name)]
-                    );
+                    var getTagsResponse = new GetTagsResponse(tagsArray);
 
                     return Results.Ok(getTagsResponse);
                 }

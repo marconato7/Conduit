@@ -40,6 +40,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     // options.UseSqlite("conduit.api.users.sqlite");
     // options.UseInMemoryDatabase("conduit.api.users");
     options
+        .LogTo(Console.WriteLine)
         .UseNpgsql(builder.Configuration.GetConnectionString("Database"))
         .UseSnakeCaseNamingConvention();
 });

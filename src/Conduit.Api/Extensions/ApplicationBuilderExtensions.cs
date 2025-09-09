@@ -29,5 +29,34 @@ internal static class ApplicationBuilderExtensions
         {
             await roleManager.CreateAsync(new IdentityRole(Roles.Member));
         }
+
+        // Tags
+        List<string> tagsNames =
+        [
+            "php",
+            "c#",
+            "javascript",
+            "java",
+            "html",
+            "css",
+            "python",
+            "sql",
+            "mysql",
+            "postgresql",
+            "sqlite",
+            "dns",
+            "http",
+        ];
+
+        List<Tag> tags = [];
+
+        foreach (var tagName in tagsNames)
+        {
+            tags.Add(new Tag(tagName));
+        }
+
+        await applicationDbContext.AddRangeAsync(tags);
+
+        await applicationDbContext.SaveChangesAsync();
     }
 }
