@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Conduit.Api.Endpoints.Articles.ListArticles;
 
-public class ListArticles : IEndpoint
+internal sealed class ListArticles : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {

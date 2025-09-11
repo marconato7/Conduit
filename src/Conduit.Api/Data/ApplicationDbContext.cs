@@ -6,7 +6,8 @@ namespace Conduit.Api.Data;
 
 internal sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
-    public DbSet<Tag> Tags => Set<Tag>();
+    public DbSet<Article> Articles => Set<Article>();
+    public DbSet<Tag>     Tags     => Set<Tag>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

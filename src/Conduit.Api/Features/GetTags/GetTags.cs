@@ -12,12 +12,16 @@ public static partial class GetTags
             .MapGet
             (
                 "api/tags",
-                async (ApplicationDbContext applicationDbContext) =>
+                async (
+                    ApplicationDbContext applicationDbContext,
+                    CancellationToken cancellationToken
+                ) =>
                 {
                     var tagsArray = await applicationDbContext
                         .Set<Tag>()
+                        .AsNoTracking()
                         .Select(tag => tag.Name)
-                        .ToArrayAsync();
+                        .ToArrayAsync(cancellationToken: cancellationToken);
 
                     var getTagsResponse = new GetTagsResponse(tagsArray);
 

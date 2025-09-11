@@ -1,7 +1,11 @@
 using Conduit.Api.Data;
 using Conduit.Api.Exceptions;
 using Conduit.Api.Extensions;
+using Conduit.Api.Features.CreateTag;
+using Conduit.Api.Features.DeleteTag;
+using Conduit.Api.Features.GetTagById;
 using Conduit.Api.Features.GetTags;
+using Conduit.Api.Features.ListArticles;
 using Conduit.Api.Features.RegisterUser;
 using Conduit.Api.Models;
 using Microsoft.AspNetCore.Identity;
@@ -113,8 +117,13 @@ app.UseExceptionHandler();
 
 // app.MapEndpoints();
 
+CreateTag.MapEndpoint(app);
+DeleteTag.MapEndpoint(app);
+GetTagById.MapEndpoint(app);
 GetTags.MapEndpoint(app);
 RegisterUser.MapEndpoint(app);
+
+ListArticles.MapEndpoint(app);
 
 // app.UseMiddleware<GlobalExceptionHandler>();
 
